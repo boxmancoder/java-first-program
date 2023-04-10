@@ -41,4 +41,3 @@ public class MortgageCalculator {
         calculator.calculateMonthlyPayment();
         System.out.println(calculator.toString());
     }
-}
