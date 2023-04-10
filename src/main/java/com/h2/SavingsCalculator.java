@@ -1,50 +1,53 @@
 package com.h2;
 
-import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.YearMonth;
 
-public class MortgageCalculator {
-
-    public static void main(String[] args) {
-        long loanAmount = Utilities.getLongValue(args[0]);
-        int termInYears = Utilities.getIntValue(args[1]);
-        float annualRate = Utilities.getFloatValue(args[2]);
-
-        MortgageCalculator calculator = new MortgageCalculator(loanAmount, termInYears, annualRate);
-        calculator.calculateMonthlyPayment();
-        System.out.println(calculator.toString());
-
+public class SavingsCalculator{
+    private float[] credits;
+    private float[] debits;
+    public SavingsCalculator(float[] credits, float[] debits){
+        this.credits = credits;
+        this.debits = debits;
     }
 
-    private long loanAmount;
-    private int termInYears;
-
-    private float annualRate;
-
-    private double monthlyPayment;
-
-    public MortgageCalculator(long loanAmount, int termInYears, float annualRate) {
-        this.loanAmount = loanAmount;
-        this.termInYears = termInYears;
-        this.annualRate = annualRate;
+    private float sumOfCredits(){
+        float sum = 0.0f;
+        for(float credit : credits){
+            sum += credit;
+        }
+        return sum;
     }
-
-    public void calculateMonthlyPayment() {
-        float r = getMonthlyInterestRate();
-        int n = getNumberOfPayments();
-        this.monthlyPayment = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    private float sumOfDebits(){
+        float sum = 0.0f;
+        for(float debit : debits){
+            sum += debit;
+        }
+        return sum;
     }
-
-    private int getNumberOfPayments() {
-        return termInYears * 12;
+    private static int remainingDaysInMonth(LocalDate date){
+        YearMonth yearMonth = YearMonth.of(date.getYear(), date.getMonth());
+        int totalDaysInMonth = yearMonth.lengthOfMonth();
+        int remainingDays = totalDaysInMonth - date.getDayOfMonth();
+        return remainingDays;
     }
-
-    private float getMonthlyInterestRate() {
-        return (annualRate / 100) / 12;
+    public float calculate(){
+        return sumOfCredits() - sumOfDebits();
     }
+    public static void main(String[] args){
+        String[] creditsAsString = args[0].split(",");
+        String[] debitsAsString = args[1].split(",");
+        float[] credits = new float[creditsAsString.length];
+        float[] debits = new float[debitsAsString.length];
+        for(int i=0; i<creditsAsString.length; i++){
+            credits[i] = Float.parseFloat(creditsAsString[i]);
+        }
+        for(int i=0; i<debitsAsString.length; i++){
+            debits[i] = Float.parseFloat(debitsAsString[i]);
+        }
 
-    @Override
-    public String toString() {
-        DecimalFormat df = new DecimalFormat("####0.00");
-        return "monthlyPayment: " + df.format(monthlyPayment);
+        SavingsCalculator calculator = new SavingsCalculator(credits, debits);
+        float netSavings = calculator.calculate();
+        System.out.println("Net Savings = " + netSavings + ", remaining days in month = " + remainingDaysInMonth(LocalDate.now()));
     }
 }
