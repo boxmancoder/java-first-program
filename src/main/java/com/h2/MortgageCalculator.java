@@ -3,36 +3,39 @@ package com.h2;
 import java.text.DecimalFormat;
 
 public class MortgageCalculator {
-    private long loanAmount;
-    private int termInYears;
-    private float annualRate;
+    private final long loanAmount;
+    private final int termInYears;
+    private final float annualRate;
     private double monthlyPayment;
-    public MortgageCalculator(long loanAmount, int termInYears, float annualRate){
+
+    public MortgageCalculator(long loanAmount, int termInYears, float annualRate) {
         this.loanAmount = loanAmount;
         this.termInYears = termInYears;
         this.annualRate = annualRate;
     }
 
-    private int getNumberOfPayments(){
-        return termInYears*12;
+    private int getNumberOfPayment() {
+        return termInYears * 12;
     }
-    private float getMonthlyInterestRate(){
-        float interestRate = annualRate/100;
-        interestRate /= 12;
-        return interestRate;
+
+    public float getMonthlyInterestRate() {
+        float interestRate = annualRate / 100;
+        return interestRate / 12;
     }
-    public void calculateMonthlyPayment(){
-        long P = loanAmount;
+
+    public void calculateMonthlyPayment() {
         float r = getMonthlyInterestRate();
-        int n = getNumberOfPayments();
-        double M = P * (((r * Math.pow(1+r,n))) / ((Math.pow((1+r),n)) - 1));
-        this.monthlyPayment = M;
+        int n = getNumberOfPayment();
+
+        this.monthlyPayment = loanAmount * (((r * Math.pow(1 + r, n))) / ((Math.pow((1 + r), n)) - 1));
     }
-    public String toString(){
-        DecimalFormat df = new DecimalFormat("####0.00");
-        return "monthlyPayment: " + df.format(monthlyPayment);
+
+    public String toString() {
+        DecimalFormat decimalFormat = new DecimalFormat("####0.00");
+        return "monthlyPayment: " + decimalFormat.format(monthlyPayment);
     }
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         long loanAmount = Utilities.getLongValue(args[0]);
         int termInYears = Utilities.getIntValue(args[1]);
         float annualRate = Utilities.getFloatValue(args[2]);
