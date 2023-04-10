@@ -7,37 +7,32 @@ public class MortgageCalculator {
     private int termInYears;
     private float annualRate;
     private double monthlyPayment;
-
-    public MortgageCalculator(long loanAmount, int termInYears, float annualRate) {
+    public MortgageCalculator(long loanAmount, int termInYears, float annualRate){
         this.loanAmount = loanAmount;
         this.termInYears = termInYears;
         this.annualRate = annualRate;
     }
 
-    private int getNumberOfPayments() {
-        return termInYears * 12;
+    private int getNumberOfPayments(){
+        return termInYears*12;
     }
-
-    private float getMonthlyInterestRate() {
-        float interestRate = annualRate / 100;
-        return interestRate / 12;
+    private float getMonthlyInterestRate(){
+        float interestRate = annualRate/100;
+        interestRate /= 12;
+        return interestRate;
     }
-
-    public void calculateMonthlyPayment() {
+    public void calculateMonthlyPayment(){
         long P = loanAmount;
         float r = getMonthlyInterestRate();
         int n = getNumberOfPayments();
-
-        double M = P * (((r * Math.pow(1 + r, n))) / ((Math.pow((1+ r), n)) - 1));
+        double M = P * (((r * Math.pow(1+r,n))) / ((Math.pow((1+r),n)) - 1));
         this.monthlyPayment = M;
     }
-
-    public String toString() {
+    public String toString(){
         DecimalFormat df = new DecimalFormat("####0.00");
         return "monthlyPayment: " + df.format(monthlyPayment);
     }
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         long loanAmount = Utilities.getLongValue(args[0]);
         int termInYears = Utilities.getIntValue(args[1]);
         float annualRate = Utilities.getFloatValue(args[2]);
